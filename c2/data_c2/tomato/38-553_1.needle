@@ -1,0 +1,47 @@
+########################################
+# Program: needle
+# Rundate: Mon 31 Oct 2016 11:10:33
+# Commandline: needle
+#    -asequence tranlated.fasta
+#    -bsequence tomato_protein.fasta
+# Align_format: srspair
+# Report_file: 38-553_1.needle
+########################################
+
+#=======================================
+#
+# Aligned_sequences: 2
+# 1: 38-553_1
+# 2: NP_001234791.1
+# Matrix: EBLOSUM62
+# Gap_penalty: 10.0
+# Extend_penalty: 0.5
+#
+# Length: 171
+# Identity:     171/171 (100.0%)
+# Similarity:   171/171 (100.0%)
+# Gaps:           0/171 ( 0.0%)
+# Score: 870.0
+# 
+#
+#=======================================
+
+38-553_1           1 MKILIFLIMFLAMLLVTSGNNNLVETTCKNTPNYNLCVKTLSLDKRSEKA     50
+                     ||||||||||||||||||||||||||||||||||||||||||||||||||
+NP_001234791.      1 MKILIFLIMFLAMLLVTSGNNNLVETTCKNTPNYNLCVKTLSLDKRSEKA     50
+
+38-553_1          51 GDITTLALIMVDAIKSKANQAANTISKLRHSNPPQAWKDPLKNCAFSYKV    100
+                     ||||||||||||||||||||||||||||||||||||||||||||||||||
+NP_001234791.     51 GDITTLALIMVDAIKSKANQAANTISKLRHSNPPQAWKDPLKNCAFSYKV    100
+
+38-553_1         101 ILPASMPEALEALTKGDPKFAEDGMVGSSGDAQECEEYFKATTIKYSPLS    150
+                     ||||||||||||||||||||||||||||||||||||||||||||||||||
+NP_001234791.    101 ILPASMPEALEALTKGDPKFAEDGMVGSSGDAQECEEYFKATTIKYSPLS    150
+
+38-553_1         151 KLNIDVHELSDVGRAIVRNLL    171
+                     |||||||||||||||||||||
+NP_001234791.    151 KLNIDVHELSDVGRAIVRNLL    171
+
+
+#---------------------------------------
+#---------------------------------------
