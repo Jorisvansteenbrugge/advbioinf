@@ -1,0 +1,70 @@
+Name: Joris van Steenbrugge
+Student number: 950416798110
+
+hostname: altschul.bioinformatics.nl
+username: steen176
+
+$ pwd
+	/home/steen176
+	
+$ mkdir c2 && cd c2
+
+$ wget http://www.bioinformatics.nl/courses/BIF-30806/docs/data_c2.tgz
+$ tar xzf data_c2.tgz
+$ ls  data_c2
+	pdb  python  tomato
+	
+$ cd python
+$ sed -i 's/MY\ NAME/Joris\ van\ Steenbrugge/g'
+$ python name.py 
+		2.7.12 (default, Jul  1 2016, 15:12:24)
+		[GCC 5.4.0 20160609]
+		Hello, my name is Joris van Steenbrugge!
+		
+idle output:
+	2.7 (r27:82525, Jul  4 2010, 09:01:59) [MSC v.1500 32 bit (Intel)]
+	Hello, my name is Joris van Steenbrugge!
+	
+$ ../pdb/
+
+$ head 1EHZ.pdb
+	THE CRYSTAL STRUCTURE OF YEAST PHENYLALANINE TRNA AT 1.93 A RESOLUTION
+	
+1EHZ is at 1.93 A, 1EVV is at 2.0 A, so a difference of 0.07 A
+
+$ grep '^ATOM' 1EHZ.pdb | wc -l
+	1329
+	
+#lowest:
+$ ~/c2/data_c2/pdb$ grep '^ATOM' 1EHZ.pdb  | awk '{print $7}' | sort -V | head -1
+	32.161
+#highest:
+$ ~/c2/data_c2/pdb$ grep '^ATOM' 1EHZ.pdb  | awk '{print $7}' | sort -V | tail -1
+	84.715
+	
+	
+OPTIONAL QUESTIONS:
+$ cd ../tomato/
+$ transeq -sequence tomato_mrna.fasta -outseq tranlated.fasta  -trim Y
+$ pepstats -sequence tranlated.fasta -outfile translated_pepstats.txt
+
+#Residue count
+$ cat tranlated_pepstats.txt |grep "Residues = " | cut -d " " -f 8
+	171
+#weight
+$ cat tranlated_pepstats.txt |grep "Residues = " | cut -d " " -f 4
+	18764.84
+
+$ needle -asequence tranlated.fasta -bsequence tomato_protein.fasta -outfile 38-553_1.needle
+$ head -n 25 38-553_1.needle | tail
+	# Matrix: EBLOSUM62
+	# Gap_penalty: 10.0
+	# Extend_penalty: 0.5
+	#
+	# Length: 171
+	# Identity:     171/171 (100.0%)
+	# Similarity:   171/171 (100.0%)
+	# Gaps:           0/171 ( 0.0%)
+	# Score: 870.0
+	#
+
