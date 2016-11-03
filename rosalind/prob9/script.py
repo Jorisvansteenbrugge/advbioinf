@@ -1,24 +1,27 @@
 #!/usr/bin/env python
-import re
+"""
+Author: Joris van Steenbrugge
+Finding motifs in DNA
 
-def findMotif(s,t):
-	q = re.compile(t)
-	found = [item.start(0) for item in q.finditer(s, overlapped=True)]
-	print(found)
-	"""
-	a = True
-	while a:
-		pos = s.find(t)
-		if pos == -1:
-			a = False
-		else:
-			print(pos)
-			s = s[:pos] + s[pos+1:]
-		
-	"""
-	
+"""
+
+import re
+from sys import argv
+
+def findMotif(s, t):
+    match = r'(?=('+re.escape(t)+ r'))'
+    matches = re.finditer(match, s)
+    matches = [str(i.start()+1) for i in matches]
+    print(" ".join(map(str, matches)))
+
+
+def getSequences(fileName):
+    with open(fileName) as inFile:
+        s = inFile.readline().strip()
+        t = inFile.readline().strip()
+    return s, t
 
 if __name__ == "__main__":
-	s = "GATATATGCATATACTT"
-	t = "ATA"
-	findMotif(s,t)
+    s, t = getSequences(argv[1])
+
+    findMotif(s, t)
