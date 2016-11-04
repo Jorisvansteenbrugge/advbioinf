@@ -32,7 +32,7 @@ def getOverlap(a, b, k=3):
 	Gets the overlap between a and b
 	a: dna sequence a
 	b: dna sequence b
-	returns: boolean overlap
+	returns: true for a match and true for a reverse
 	"""
 
 	astart = a[0:k]
@@ -40,11 +40,18 @@ def getOverlap(a, b, k=3):
 	
 	bstart = b[0:k]
 	bend = b[len(b)-k:len(b)]
+
+	match = False
+	rev = False
 	
-	if astart == bend or aend == bstart:
-		return True
-	else:
-		return False
+	if astart == bend:
+		rev = True
+		match = True
+	if  aend == bstart:
+		rev =  False
+		match = True
+	return match, rev
+	
 
 
 
@@ -56,8 +63,12 @@ def combine(seq):
 	"""
 
 	for a,b in itertools.combinations(seq.keys(), 2):
-		if getOverlap(seq[a],seq[b]):
-			print(a, b)
+		match, rev = getOverlap(seq[a],seq[b])
+		if match:
+			if rev:	
+				print(b, a)
+			else:
+				print(a, b)
 
 if __name__ == "__main__":
 	fileName = argv[1]
