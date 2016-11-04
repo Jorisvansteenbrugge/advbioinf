@@ -27,14 +27,29 @@ def extract_kmers(seq, k=4):
     for i in range(len(seq)-kmer_size+1):
         kmer = seq[i:i+kmer_size]
         res.append(kmer)
-
+    assert len(res) == len(seq)-kmer_size+1, "Not all k-mers were called"
     return res
 
 def getMatch(kmer, seq, total):
+    """
+    Returns the matching positions for the current kmer
+    :param kmer: The current kmer, derrived from the revcomp sequence
+    :param seq: The DNA sequence
+    :param total: a dictionary
+    :return:
+    """
     match = r'(?=(' + re.escape(kmer) + r'))'
     matches = re.finditer(match, seq)
     for i in matches:
-        total.append("{} {}".format(str(i.start()+1), str(len(kmer))))
+        start = i.start()
+        kmerLen = len(kmer)
+
+        # Check if we already have the longest kmer on the starting position
+        if start in total.keys():
+            if kmerLen <= total[start]:
+                continue
+        total[start] = kmerLen
+
     return total
 
 def getRevComp(dna):
@@ -67,22 +82,28 @@ def getSequence(fileName):
                 seq += line
     return seq
 
-def process(dna, revcomp):
-    kmers = extract_kmers(revcomp)
-    total = []
-    for kmer in kmers:
-        if kmer in dna:
-            getMatch(kmer, dna, total)
+def printOut(total):
+    for (i,y) in total.items():
+        print i, y
 
-    for i in set(total):
-        print(i)
+def process(dna, revcomp):
+    total = {}
+    for i in [4,5,6,7,8,9,10,11,12]:
+        kmers = extract_kmers(revcomp, k=i)
+        for kmer in kmers:
+            if kmer in dna:
+                getMatch(kmer, dna, total)
+
+    printOut(total)
 
 if __name__ == "__main__":
-    fileName = argv[1]
+    fileName = "C:\\Users\\Joris\\Desktop\\test.dat"
     dna = getSequence(fileName)
     revcomp = getRevComp(dna)
 
+
     print dna
     print revcomp
+
     process(dna, revcomp)
 
