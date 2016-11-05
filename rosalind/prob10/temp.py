@@ -84,7 +84,7 @@ def getSequence(fileName):
 
 def printOut(total):
     for (i,y) in total.items():
-        print i, y
+        print(i, y)
 
 def process(dna, revcomp):
     total = {}
@@ -97,13 +97,13 @@ def process(dna, revcomp):
     printOut(total)
 
 if __name__ == "__main__":
-    fileName = "C:\\Users\\Joris\\Desktop\\test.dat"
+    fileName = argv[1]
     dna = getSequence(fileName)
     revcomp = getRevComp(dna)
 
 
-    print dna
-    print revcomp
+    print(dna)
+    print(revcomp)
 
     process(dna, revcomp)
 
