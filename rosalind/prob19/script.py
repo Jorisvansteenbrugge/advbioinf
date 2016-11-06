@@ -1,8 +1,26 @@
 #!/usr/bin/env python
 
+from sys import argv
 from difflib import SequenceMatcher
 import itertools
 import re
+
+
+
+def getSequences(inFile):
+	"""Return dictionary of {label:dna_seq}
+	lines: list of lines in FASTA format
+	"""
+	seqs = {}
+	for line in inFile:
+		if not line.strip():
+			continue
+		if line.startswith('>'):
+			label = line.strip()[0:]
+			seqs[label] = ""
+		else:
+			seqs[label] += line.strip()[0:]
+	return seqs.values()
 
 def getOverlap(a,b):
 	matches = []
@@ -46,15 +64,9 @@ def getNonMatching(a, match):
 			return post, False
 
 		
-
-if __name__ == '__main__':
-	a = "ATTAGACCTG"
-	b = "CCTGCCGGAA"
-	c = "AGACCTGCCG"
-	d = "GCCGGAATAC"
-
-
+def getSuperString(a,b):
 	acp = a
+	
 	overlaps = []
 	while(len(acp) > 0):
 		substr = getOverlap(acp,b)
@@ -62,7 +74,7 @@ if __name__ == '__main__':
 		acp = acp[1:]
 
 	overlaps.sort(key=len)
-	print(overlaps)
+	
 	match = overlaps[-1]
 	superstring = ""
 
@@ -74,5 +86,23 @@ if __name__ == '__main__':
 			pre = substr
 		else:
 			post = substr
-	superstring = pre + match + post
-	print(superstring)
+	superstring = pre +  post
+	return superstring
+
+if __name__ == '__main__':
+	a = "ATTAGACCTG"
+	b = "CCTGCCGGAA"
+	c = "AGACCTGCCG"
+	d = "GCCGGAATAC"
+	
+	sequences = list(set(getSequences(open(argv[1]))))
+
+	superstr = sequences.pop(0)
+
+	for seq in sequences:		
+		superstr = getSuperString(superstr,seq)
+
+	print(superstr)
+
+
+
