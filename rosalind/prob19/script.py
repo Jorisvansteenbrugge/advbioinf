@@ -2,44 +2,77 @@
 
 from difflib import SequenceMatcher
 import itertools
+import re
 
 def getOverlap(a,b):
-	ahalf = len(a)/2
-	bhalf = len(b)/2
-	
-	d = SequenceMatcher(None,a,b)
-	match = max(d.get_matching_blocks(), key=lambda x:x[2])
-	i,j,k = match
-	max_overlap = d.a[i:i+k]
-	
-	if len(max_overlap) >= ahalf and len(max_overlap) >= bhalf:
-		return max_overlap
+	matches = []
+	match = ""
+	prev = ""
+	count = 0
+	read = True
+	while (read == True):
+		if count != len(a):
+			val = a[count]
+			prev = match
+			match = match + val
+
+			if match in b:
+				pass
+
+			else:
+				matches.append(prev)
+				match = ""
+
+		else:
+			read = False
+			matches.append(match)
+		count += 1
+    
+	if len(matches[0]) > len(matches[-1]):
+		return matches[0]
 	else:
-		return None
+		return matches[-1]
 
-def secondIt(a, prelim_superstring):
-	ahalf = len(a)/2
-	
-	d = SequenceMatcher(None,a, prelim_superstring)
-        match = max(d.get_matching_blocks(), key=lambda x:x[2])
-        i,j,k = match
-        max_overlap = d.a[i:i+k]
+def getNonMatching(a, match):
+	pattern = re.escape(match)
 
-	print(max_overlap)
+	for i in re.finditer(pattern, a):
+		start = i.start()
+		if start != 0:
+			pre = a[0:start]
+			return pre, True
+		else:
+			post = a[start:]
+			return post, False
+
+		
 
 if __name__ == '__main__':
 	a = "ATTAGACCTG"
 	b = "CCTGCCGGAA"
 	c = "AGACCTGCCG"
 	d = "GCCGGAATAC"
-	
-	prelim_superstring = ""	
-	for i in itertools.combinations([a,b,c,d],2):
-		overlap = getOverlap(i[0],i[1])
-		if overlap:
-			prelim_superstring += overlap
 
-	for i in [a,b,c,d]:
-		secondIt(i, prelim_superstring)
 
-	print("                                                 "+prelim_superstring)
+	acp = a
+	overlaps = []
+	while(len(acp) > 0):
+		substr = getOverlap(acp,b)
+		overlaps.append(substr)
+		acp = acp[1:]
+
+	overlaps.sort(key=len)
+	print(overlaps)
+	match = overlaps[-1]
+	superstring = ""
+
+	pre = ""
+	post = ""
+	for i in [a,b]:
+		substr, prepos = getNonMatching(i,match)
+		if prepos:
+			pre = substr
+		else:
+			post = substr
+	superstring = pre + match + post
+	print(superstring)
