@@ -11,16 +11,17 @@ def getSequences(inFile):
 	"""Return dictionary of {label:dna_seq}
 	lines: list of lines in FASTA format
 	"""
-	seqs = {}
+	seqs = []
+	seq = ""
 	for line in inFile:
-		if not line.strip():
-			continue
 		if line.startswith('>'):
-			label = line.strip()[0:]
-			seqs[label] = ""
+			if seq != "":
+				seqs.append(seq)
+				seq = ""
 		else:
-			seqs[label] += line.strip()[0:]
-	return seqs.values()
+			seq  += line.strip()
+	seqs.append(seq)
+	return seqs
 
 def getOverlap(a,b):
 	matches = []
@@ -95,8 +96,8 @@ if __name__ == '__main__':
 	c = "AGACCTGCCG"
 	d = "GCCGGAATAC"
 	
-	sequences = list(set(getSequences(open(argv[1]))))
-
+	sequences = getSequences(open(argv[1]))
+	print(sequences)
 	superstr = sequences.pop(0)
 
 	for seq in sequences:		
