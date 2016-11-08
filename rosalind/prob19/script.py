@@ -46,11 +46,16 @@ def getOverlap(a,b):
 			read = False
 			matches.append(match)
 		count += 1
-    
 	if len(matches[0]) > len(matches[-1]):
-		return matches[0]
+		if matches[0] > len(b):
+			return matches[0]
+		else: 
+			return None
 	else:
-		return matches[-1]
+		if matches[-1] > len(b):
+			return matches[-1]
+		else: 
+			return None
 
 def getNonMatching(a, match):
 	pattern = re.escape(match)
@@ -71,8 +76,9 @@ def getSuperString(a,b):
 	overlaps = []
 	while(len(acp) > 0):
 		substr = getOverlap(acp,b)
-		overlaps.append(substr)
-		acp = acp[1:]
+		if substr:
+			overlaps.append(substr)
+			acp = acp[1:]
 
 	overlaps.sort(key=len)
 	
@@ -97,13 +103,22 @@ if __name__ == '__main__':
 	d = "GCCGGAATAC"
 	
 	sequences = getSequences(open(argv[1]))
-	print(sequences)
 	superstr = sequences.pop(0)
 
+	excluded = []
 	for seq in sequences:		
-		superstr = getSuperString(superstr,seq)
+		temp = getSuperString(superstr,seq)
+		if len(temp) <= len(superstr):
+			excluded.append(seq)
+		else:
+			superstr = temp
+		print(superstr)
+	
+	for seq in excluded:
+		superstr = getSuperString(superstr, seq)
 
-	print(superstr)
+
+	
 
 
 
