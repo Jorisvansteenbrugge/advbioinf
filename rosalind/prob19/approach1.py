@@ -70,31 +70,38 @@ def getNonMatching(a, match):
 			return post, False
 
 		
-def getSuperString(a,b):
-	acp = a
+def getSuperString(a,seqs):
 	
-	overlaps = []
-	while(len(acp) > 0):
-		substr = getOverlap(acp,b)
-		if substr:
-			overlaps.append(substr)
-			acp = acp[1:]
+	size = 0
+	longest = ""
+	for b in seqs:
+		acp = a
+		overlaps = []
+		while(len(acp) > 0):
+			substr = getOverlap(acp,b)
+			if substr:
+				overlaps.append(substr)
+				acp = acp[1:]
 
-	overlaps.sort(key=len)
+		overlaps.sort(key=len)
 	
-	match = overlaps[-1]
+		match = overlaps[-1]
+		if len(match) > size:
+			longest = match
+			size = len(match)
+
 	superstring = ""
 
 	pre = ""
 	post = ""
-	for i in [a,b]:
-		substr, prepos = getNonMatching(i,match)
+	for i in [a,longest]:
+		substr, prepos = getNonMatching(i, longest)
 		if prepos:
 			pre = substr
 		else:
 			post = substr
 	superstring = pre +  post
-	return superstring
+	return superstring, longest
 
 if __name__ == '__main__':
 	a = "ATTAGACCTG"
@@ -105,18 +112,12 @@ if __name__ == '__main__':
 	sequences = getSequences(open(argv[1]))
 	superstr = sequences.pop(0)
 
-	excluded = []
-	for seq in sequences:		
-		temp = getSuperString(superstr,seq)
-		if len(temp) <= len(superstr):
-			excluded.append(seq)
-		else:
-			superstr = temp
-		print(superstr)
 	
-	for seq in excluded:
-		superstr = getSuperString(superstr, seq)
 
+	for i in range(len(sequences)):
+		superstr, removeItem = getSuperString(superstr,sequences)
+
+	print(superstr)
 
 	
 
