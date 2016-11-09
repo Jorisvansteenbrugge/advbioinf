@@ -6,8 +6,9 @@ import re
 
 
 def getSequences(inFile):
-        """Return dictionary of {label:dna_seq}
-        lines: list of lines in FASTA format
+        """
+	Extracts dna sequences of a fasta file
+	return: List of dna_seq
         """
         seqs = []
         seq = ""
@@ -22,63 +23,70 @@ def getSequences(inFile):
         return seqs
 
 def getNonMatching(a, match):
+	"""
+	Calculates the string present before or after the match (the overlap that was found between 2 seqs
+	"""
         pattern = re.escape(match)
 
         for i in re.finditer(pattern, a):
                 start = i.start()
+		
+		# If the match starts not at the start of a
                 if start != 0:
                         pre = a[0:start]
                         return pre, True
+		# If it does start at the start of a
                 else:
                         post = a[start:]
                         return post, False
 
+
 def getOverlap(template, newSeq):
+	"""
+	Calculates the maximum overlap between 2 sequences. Coded this myself as well in another script but shorter code give more overview.
+	"""
 	s = difflib.SequenceMatcher(None, template, newSeq)
 	pos_a, pos_b, size = s.find_longest_match(0, len(template), 0, len(newSeq))
 	return template[pos_a:pos_a+size]
 
 
-def magic(template, sequences):
-	skipped = []
-	for i in range(len(sequences)):
-                longestOverlap = ""
-                longest = ""
-                size = 0
-                for seq in sequences:
-                        overlap = getOverlap(template, seq)
-                        if len(overlap) > size:
-                                longestOverlap = overlap
-                                longest = seq
-                                size = len(overlap)
+def process(template, sequences):
+	"""
+	Gets the overlap between the template and the other sequences
+	"""
+	for seq in sequences:
+		overlap = getOverlap(template, seq)
+		if len(overlap) > len(seq)/2:
 
+			for y in [template, seq]:
+				substr, prepos = getNonMatching(y, overlap)
+				if prepos:
+					pre = substr
+				else:
+					post = substr
 
-                if size > 0:
-                        pre = ""
-                        post = ""
-                        for y in [template, longest]:
-                                substr, prepos = getNonMatching(y, longestOverlap)
-                                if prepos:
-                                        pre = substr
-                                else:
-                                        post = substr
+			template = pre+post
 
-                        template = pre+post
-                        sequences.remove(longest)
-
-	return template, sequences
+	return template
 
 if __name__ == "__main__":
-	sequences = getSequences(open(argv[1]))
-	template = sequences.pop(0)
+	sequences = tuple(getSequences(open(argv[1])))
+	superstrings = []
 
-	count = 1
-	while len(sequences) >= 1:
-		print("Iteration {}".format(str(count)))
-		print("Current size {}".format(str(len(sequences))))
-		template, sequences = magic(template, sequences)	
-		count += 1
-	print(len(sequences))
+	#template = magic(template, sequences)
 
 
-	
+	# This is designed that each sequence is used as template once, so multiple possible superstrings
+	#are create
+	for i in range(len(sequences)):
+                seqs = list(sequences)
+                superstr = seqs.pop(i)
+                superstr = process(superstr,seqs)
+                superstrings.append(superstr)
+
+
+	#possible superstrings sorted on length
+	superstrings = sorted(superstrings, key=len)
+
+	#get longest
+	print(superstrings[-1])

@@ -70,8 +70,7 @@ def getNonMatching(a, match):
 			return post, False
 
 		
-def getSuperString(a,seqs):
-	
+def getSuperString(a,seqs):	
 	size = 0
 	longest = ""
 	for b in seqs:
@@ -91,7 +90,6 @@ def getSuperString(a,seqs):
 			size = len(match)
 
 	superstring = ""
-
 	pre = ""
 	post = ""
 	for i in [a,longest]:
@@ -109,15 +107,16 @@ if __name__ == '__main__':
 	c = "AGACCTGCCG"
 	d = "GCCGGAATAC"
 	
-	sequences = getSequences(open(argv[1]))
-	superstr = sequences.pop(0)
-
-	
-
+	sequences = tuple(getSequences(open(argv[1])))
+		
 	for i in range(len(sequences)):
-		superstr, removeItem = getSuperString(superstr,sequences)
+		seqs = list(sequences)
+		superstr = seqs.pop(i)	
+		print(superstr)
+		superstr, removeItem = getSuperString(superstr,seqs)
+		print("out: {}".format(superstr))
+		
 
-	print(superstr)
 
 	
 
