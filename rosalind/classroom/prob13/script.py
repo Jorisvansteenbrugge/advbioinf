@@ -66,9 +66,9 @@ def combine(seq):
 		match, rev = getOverlap(seq[a],seq[b])
 		if match:
 			if rev:	
-				print(b, a)
+				print("{} {}".format(b, a))
 			else:
-				print(a, b)
+				print("{} {}".format(a, b))
 
 if __name__ == "__main__":
 	fileName = argv[1]
