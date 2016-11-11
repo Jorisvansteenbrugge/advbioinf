@@ -33,21 +33,18 @@ def getSequences(inFile):
     return seqs
 
 def getHeadTailOverlap(seqA, seqB):
-    """ Calculates the overlap between 2 sequences.
+    """Returns the maximum overlap between seqA and seqB 
     
     The overlap is determined from start/end to somewhere in the middle,
     or from the middle to the start/end. No overlaps in the center.
 
     Keyword arguments:
         seqA -- The first sequence to overlap as a string
-        seqB -- The second sequence to overlap as a string
-    Returns:
-        The maximum overlap between seqA and seqB
-        A none type object if there is no overlap
+        seqB -- The second sequence to overlap as a str
 
-
-    The function should be more modular
+    This function should be more modular
     The re pattern testing could be replaced
+    Returns a None type object if no overlap was found
     """
     possible_overlaps = []
 
@@ -142,84 +139,7 @@ if __name__ == "__main__":
     values = [x[0] for x in overlaps.values()]
     start = [x for x in overlaps.keys() if x not in values]
 
-    
-    print("CreatingSuperString")
-    print(getSuperstring(start[0],overlaps,sequences))
+    print(overlaps)   
+#    print("CreatingSuperString")
+#    print(getSuperstring(start[0],overlaps,sequences))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#def junkyard(template, sequences):
- #   """Gets the overlap between the template and the other sequences
-  #  """
-   # pass
- #   for y in [template, seq]:
-#	substr, prepos = getNonMatching(y, overlap)
- #       if prepos:
-  #      	pre = substr
-   #     else:
-   #             post = substr
-
-    #return template
-
-    
-    #for i in range(len(sequences)):
-     #   seqs = list(sequences)
-      #  superstr = seqs.pop(i)
-       # superstr = process(superstr,seqs)
-        #superstrings.append(superstr)
-#
-
-	#possible superstrings sorted on length
-#	superstrings = sorted(superstrings, key=len)
-
-	#get longest
-#	print(superstrings[-1])
