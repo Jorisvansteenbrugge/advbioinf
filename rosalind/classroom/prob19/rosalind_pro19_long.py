@@ -11,7 +11,7 @@ __status__ = "Development"
 from sys import argv
 import re
 import itertools
-
+import difflib
 
 def getSequences(inFile):
     """Parses a fasta file and retrieves the labels and sequences
@@ -74,6 +74,18 @@ def getHeadTailOverlap(seqA, seqB):
         return None
 
 
+def altOverlap(seqA, seqB):
+    match_list = difflib.SequenceMatcher(None, seqA, seqB).get_matching_blocks()
+    match_list.pop(-1) # last one is always a dummy in get_matching_blocks
+    
+    match_list = sorted(match_list, key=lambda x: x[2], reverse = True)
+    match = match_list[0]
+    overlap = seqA[match[0]:match[2]+1]
+    
+    if seqA.endswith(overlap) and seqB.startswith(overlap):
+        return (match[0], match[2])
+    else:
+        return None
 
 def getSuperstring(start, overlaps, sequences):
     """Return the calculated superstring
@@ -125,14 +137,19 @@ if __name__ == "__main__":
     for seqs in itertools.permutations(sequences.keys(), 2):
         seqA = sequences[seqs[0]]
         seqB = sequences[seqs[1]]
-        overlap = getHeadTailOverlap(seqA, seqB)
 
+        match = altOverlap(seqA, seqB)
+        if match:
+            seqA_index, length = match
+            if length >= (len(seqA) / 2.0) and length >= (len(seqB) / 2.0):
+                overlaps[seqs[0]] = [seqs[1], seqA_index, length] 
+        #overlap = getHeadTailOverlap(seqA, seqB)
         #overlap exists
-        if overlap:
-            #overlap covers at least half of both sequences
-            if len(overlap) >= (len(seqA) / 2.0) and len(overlap) >= (len(seqB) / 2.0):
-                #print("{}\t{}\t{}".format(seqs[0],seqs[1],sequences[seqs[0]].index(overlap))) 
-                overlaps[seqs[0]] = [seqs[1], sequences[seqs[0]].index(overlap), len(overlap)]
+        #if overlap:
+         #   #overlap covers at least half of both sequences
+          #  if len(overlap) >= (len(seqA) / 2.0) and len(overlap) >= (len(seqB) / 2.0):
+           #     #print("{}\t{}\t{}".format(seqs[0],seqs[1],sequences[seqs[0]].index(overlap))) 
+            #    overlaps[seqs[0]] = [seqs[1], sequences[seqs[0]].index(overlap), len(overlap)]
 
 
     # Defining the starting position of the "network"
@@ -140,6 +157,6 @@ if __name__ == "__main__":
     start = [x for x in overlaps.keys() if x not in values]
 
     print(overlaps)   
-#    print("CreatingSuperString")
-#    print(getSuperstring(start[0],overlaps,sequences))
+    #print("CreatingSuperString")
+    #print(getSuperstring(start[0],overlaps,sequences))
 
