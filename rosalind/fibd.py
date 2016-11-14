@@ -1,26 +1,21 @@
-
-
+#!/usr/bin/env python
 from sys import argv
 
 
 def fibo(n, m):
+    count = 2
     pairs = [1, 1]
-    death_pairs = []
-    for i in range(2, n):
-        f1 = pairs[i-1]
-        f2 = pairs[i-2] 
-        pairs.append((f1+f2))
-
-    for i in range( n):
-        if i-3 >= 0:
-            death = sum(pairs[0:i-m+1])
-            death_pairs.append(pairs[i]-death)
+    while count < n:
+        if count < m:
+            pairs.append(pairs[-2] + pairs[-1])
+        elif count == m or count == m+1:
+            pairs.append(pairs[-2] + pairs[-1] - 1)
         else:
-            death_pairs.append(pairs[i])
+            pairs.append((pairs[-2] + pairs[-1]) - pairs[-(m+1)])
+        count += 1
+ 
 
-    
-
-    return death_pairs
+    return pairs
 
 
 if __name__ == "__main__":
