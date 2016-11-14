@@ -11,6 +11,8 @@ __version__ = "1.0"
 __date__ = "11 Nov. 2016"
 __email__ = "joris.vansteenbrugge@wur.nl"
 
+import time
+
 from os import path
 from sys import argv
 import subprocess as sp
@@ -236,21 +238,26 @@ def report(alignments):
                                               hamm, ident))
 
 if __name__ == "__main__":
+    times = []
+    for i in range(100000):
+        start_time = time.time()
     #Gets file paths from the command line
-    seqA_path = argv[1]
-    seqB_path = argv[2]
-    needleOutput = "out.needle" # always out.needle
+        seqA_path = argv[1]
+        seqB_path = argv[2]
+        needleOutput = "out.needle" # always out.needle
 
     #Retrieve the sequences for both fasta files
-    seqA = getSequence(open(argv[1]))
-    seqB = getSequence(open(argv[2]))
+        seqA = getSequence(open(argv[1]))
+        seqB = getSequence(open(argv[2]))
     
     #Run the needle program using the files
-    runNeedle(argv[1], argv[2], needleOutput)
+        runNeedle(argv[1], argv[2], needleOutput)
 
     #Get alignment objects from the needle output
-    alignments = parseNeedleOutput(needleOutput)
+        alignments = parseNeedleOutput(needleOutput)
 
     #report Metrics
-    report(alignments)
+      #  report(alignments)
+        times.append(time.time()-start_time)
 
+    print(sum(times)/len(times))

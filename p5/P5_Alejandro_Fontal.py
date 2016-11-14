@@ -1,17 +1,20 @@
 #!/usr/bin/env python
 
+
+
 """
 Author: Alejandro Fontal
 Student Registration Number: 920110-242-090
 """
 
-from __future__ import division
+
 from sys import argv
 import os.path
 import subprocess
 import re
 
 
+from __future__ import division
 def wget(link):
 
     """
@@ -206,9 +209,7 @@ def get_seqs_from_align_record(parsed_dict, record):
 
 
 if __name__ == "__main__":
-
-    """
-    In case files haven't been downloaded, check if required files are on
+    """In case files haven't been downloaded, check if required files are on
     current working directory, if they are not, download them.
     """
 

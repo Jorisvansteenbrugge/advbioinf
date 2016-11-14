@@ -1,6 +1,6 @@
 ########################################
 # Program: needle
-# Rundate: Fri 11 Nov 2016 09:20:13
+# Rundate: Mon 14 Nov 2016 09:20:17
 # Commandline: needle
 #    -asequence ref.fasta
 #    -bsequence related.fasta
