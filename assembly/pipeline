@@ -3,7 +3,8 @@
 __author__ = "Joris van Steenbrugge"
 
 from glob import glob
-from Assembler import AssemblyTool
+from assemblers.BaseAssembler import BaseAssembler
+
 import Metrics
 import argparse
 
@@ -31,9 +32,9 @@ def calcMetrics(directory):
 
 if __name__ == "__main__":
     arguments = getArguments()
-    #assembler = AssemblyTool(arguments.program, arguments.readType, arguments.input, arguments.outdir)
-    #assembler.assemble()
-    #assembler.cleanUp()
-
+    assembler = BaseAssembler(arguments.program, arguments.readType, arguments.input, arguments.outdir)
+    assembler.assemble()
+    assembler.cleanUp()
 
     calcMetrics(arguments.outdir)
+
