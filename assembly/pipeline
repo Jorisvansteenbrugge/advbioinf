@@ -4,12 +4,13 @@ __author__ = "Joris van Steenbrugge"
 
 from glob import glob
 from assemblers.BaseAssembler import BaseAssembler
-
+from os import path
 import Metrics
 import argparse
 
 def getArguments():
     p = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    
     p.add_argument("-i", dest = "input", required = True, nargs = "+", help="Input file(s)")
     p.add_argument("-p", dest = "program", required = False, type = int,  default = 1, 
             help="Alignment program: (default: 1) \n\t"+
@@ -28,14 +29,15 @@ def getArguments():
 
 def calcMetrics(directory):
     for contigFile in glob(directory + "/*"):
-        print(Metrics.getNMetric(contigFile, 50))
+        n50 = Metrics.getNMetric(contigFile, 50)
+        print("{} N50: {}".format(path.basename(contigFile.split(".")[0]), str(n50)))
 
 
 if __name__ == "__main__":
     arguments = getArguments()
-    assembler = BaseAssembler(arguments.program, arguments.readType, arguments.input, arguments.outdir)
-    assembler.assemble()
-    assembler.cleanUp()
+#    assembler = BaseAssembler(arguments.program, arguments.readType, arguments.input, arguments.outdir)
+#    assembler.assemble()
+#    assembler.cleanUp()
 
     calcMetrics(arguments.outdir)
 

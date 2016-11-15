@@ -26,7 +26,9 @@ class BaseAssembler(object):
         call("mkdir {}".format(outdir), shell = True)
 
     def moveContigFile(self):
-        call("mv {} {}".format(self.assembler.getContigFile() , self.outdir+"/"), shell = True)
+        call("mv {} {}".format(self.assembler.getContigFile(),
+                                self.outdir+"/"+self.tool+"_contigs.fa")
+                        ,shell = True)
 
 
     def assemble(self):

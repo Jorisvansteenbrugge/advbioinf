@@ -19,16 +19,20 @@ class SoapAssembler(object):
                                                                   "soapGraph")
         os.chdir(self.workdir)
         sp.call(soap, shell = True)
+
+        
         
     def soapConfig(self):
         scriptPath = os.path.dirname(os.path.realpath(argv[0]))
-        soapconfig = scriptPath + "/soapconfig"
-        with open("soapConfig") as inFile, open(soapconfig,"w") as outFile:
+        soap_template = scriptPath + "/soapConfig"
+        soap_config = self.workdir + "/soapConfig"
+
+        with open(soap_template) as inFile, open(soap_config,"w") as outFile:
             for line in inFile:
                 outFile.write(line)
             outFile.write("q1={}\n".format(self.readFiles[0]))
             outFile.write("q2={}".format(self.readFiles[1]))
-        return soapconfig
+        return soap_config
 
     def getContigFile(self):
         return self.contigFile
