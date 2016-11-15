@@ -4,7 +4,9 @@ __author__ = "Joris van Steenbrugge"
 
 from glob import glob
 from assemblers.BaseAssembler import BaseAssembler
+from annotators.BaseAnnotator import BaseAnnotator
 from os import path
+
 import Metrics
 import argparse
 import sys
@@ -16,9 +18,11 @@ def getArguments():
     subparsers.required = True
 
     # Assembly sub command
-    assembly_parser = subparsers.add_parser("assembly", help="De novo assembly")
+    assembly_parser = subparsers.add_parser("assembly", 
+            help="De novo assembly")
     assembly_parser.set_defaults(func=assembly)
-    assembly_parser.add_argument("-i", dest = "input", required = True, nargs = "+", help="Input file(s)")
+    assembly_parser.add_argument("-i", dest = "input", required = True, nargs = "+", 
+            help="Input file(s)")
     assembly_parser.add_argument("-p", dest = "program", required = False, type = int,  default = 1, 
             help="Alignment program: (default: 1) \n\t"+
                     "1: Velvet \n\t" + 
@@ -28,17 +32,30 @@ def getArguments():
                     "(*) Currently not supported")
     assembly_parser.add_argument("-type", dest = "readType", required = False, default="paired",
             help="Type of the reads, unpaired/paired (default: paired)")
-    assembly_parser.add_argument("-o", dest = "outdir", required = True, help = "Directory for output files")
+    assembly_parser.add_argument("-o", dest = "outdir", required = True, 
+            help = "Directory for output files")
 
     # Annotate sub command
-    annotate_parser = subparsers.add_parser("annotate", help = "Annotate a sequence")
-    annotate_parser.add_argument("-i", dest = "input", help = "Fasta file containing (contig) sequences")
+    annotate_parser = subparsers.add_parser("annotate", 
+            help = "Annotate a sequence")
+    annotate_parser.add_argument("-i", dest = "input", required = True,
+            help = "Fasta file containing (contig) sequences")
+    annotat_parser.add_argument("-o", dest = "output", required = True,
+            help = "Output file containing the annotation")
+    annotate_parser.add_argument("-p", dest = "program", type = int, default = 1, 
+            help = "Annotating program: (default: 1) \n\t" + 
+                    "1: tRNAscan \n\t" +
+                    "2: Augustus (*)\n\t" +
+                    "(*) Currently not supported")
+    annotate_parser.set_defaults(func=annotate)
+
 
     # Metrics sub command
-    metrics_parser = subparsers.add_parser("metrics", help = "Calculate differnt metrics")
-    metrics_parser.set_defaults(func=calcMetrics)
+    metrics_parser = subparsers.add_parser("metrics", 
+            help = "Calculate differnt metrics")
     metrics_parser.add_argument("-d", dest = "directory", 
             help = "Path to a directory with contif files in fasta format")
+    metrics_parser.set_defaults(func=calcMetrics)
     
     return p.parse_args()
 
@@ -55,6 +72,10 @@ def assembly(arguments):
     assembler.assemble()
     assembler.cleanUp()
 
+
+def annotate(arguments):
+    annotator = BaseAnnotator(arguments.program, arguments.input, arguments.output)
+    annotator.annotate()
 
 if __name__ == "__main__":
     if sys.version[0] != "3":
