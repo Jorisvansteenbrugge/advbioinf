@@ -2,6 +2,7 @@
 
 __author__ = "Joris van Steenbrugge"
 
+from shutil import move
 import subprocess as sp
 import tempfile as tp
 import os
@@ -17,11 +18,17 @@ class AssemblyTool(object):
                  4: "abyss"
                  }
 
-    def __init__(self, toolNum, readType, readFiles):
+    def __init__(self, toolNum, readType, readFiles, outdir):
         self.tool = self.toolIndex[toolNum]
         self.readType = readType
         self.readFiles = readFiles
         self.workdir = tp.mkdtemp(suffix=self.tool)
+        self.outdir = outdir
+        
+        #try:
+        sp.call("mkdir {}".format(outdir), shell=True)
+        #except FileExistsError:
+         #   pass
 
     def getAssembleCommands(self, fileFormat="fastq"): 
         if self.tool == "Velvet":
@@ -37,12 +44,17 @@ class AssemblyTool(object):
                                                 fileFormat,
                                                 self.inputs)
             velvetg = "velvetg {}".format(self.workdir)  
+            
+            self.contigFile = self.workdir + "/contigs.fa"
+
             return [velveth, velvetg]
         elif self.tool == "soapdenovo":
             soapconfig = self.soapConfig()
             soap = "soapdenovo-63mer all -s {} -K 63 -R -o {}".format(soapconfig,
                                                                         "soapGraph")
             os.chdir(self.workdir)
+
+            self.contigFile = self.workdir + "/soapGraph.contig"
             return [soap]
         else:
             raise NotImplementedError("The use of {} is not currently supported".format(self.tool))
@@ -61,6 +73,12 @@ class AssemblyTool(object):
         for cmd in commands:
             print(cmd.strip())
             sp.call(cmd, shell=True)
+
+        self.moveContigToOutdir()
+
+    def moveContigToOutdir(self):
+        sp.call("mv {} {}".format(self.contigFile, self.outdir+"/"), shell= True)
+        
 
     def cleanUp(self):
         print(self.workdir)
