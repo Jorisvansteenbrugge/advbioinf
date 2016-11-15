@@ -14,11 +14,12 @@ def getArguments():
     p.add_argument("-p", dest = "program", required = False, type = int,  default = 1, 
             help="Alignment program: (default: 1) \n\t"+
                     "1: Velvet \n\t" + 
-                    "2: wgs-assembler \n\t" +
+                    "2: wgs-assembler (*) \n\t" +
                     "3: soapdenovo \n\t" + 
-                    "4: abyss")
-    p.add_argument("-type", dest = "readType", required = False, default="unpaired",
-            help="Type of the reads, unpaired/paired (default: unpaired)")
+                    "4: abyss (*) \n\t" +
+                    "(*) Currently not supported")
+    p.add_argument("-type", dest = "readType", required = False, default="paired",
+            help="Type of the reads, unpaired/paired (default: paired)")
     p.add_argument("-o", dest = "outdir", required = True, help = "Directory for output files")
     return p.parse_args()
 
