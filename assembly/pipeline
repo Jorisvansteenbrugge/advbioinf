@@ -2,7 +2,9 @@
 
 __author__ = "Joris van Steenbrugge"
 
+from glob import glob
 from Assembler import AssemblyTool
+import Metrics
 import argparse
 
 def getArguments():
@@ -22,9 +24,16 @@ def getArguments():
 
 
 
+def calcMetrics(directory):
+    for contigFile in glob(directory + "/*"):
+        print(Metrics.getNMetric(contigFile, 50))
+
 
 if __name__ == "__main__":
     arguments = getArguments()
-    assembler = AssemblyTool(arguments.program, arguments.readType, arguments.input, arguments.outdir)
-    assembler.assemble()
-    assembler.cleanUp()
+    #assembler = AssemblyTool(arguments.program, arguments.readType, arguments.input, arguments.outdir)
+    #assembler.assemble()
+    #assembler.cleanUp()
+
+
+    calcMetrics(arguments.outdir)
