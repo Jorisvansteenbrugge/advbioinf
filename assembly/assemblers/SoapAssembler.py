@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+from sys import argv
+import subprocess as sp
+import os
+
+class SoapAssembler(object):
+    
+    def __init__(self, workdir):
+        print(__name__)
+        self.workdir = workdir
+        self.contigFile = self.workdir + "/soapGraph.contig"
+
+
+    def assemble(self, readType, readFiles):
+        self.readFiles = readFiles
+        soapconfig = self.soapConfig()
+        soap = "soapdenovo-63mer all -s {} -K 63 -R -o {}".format(soapconfig,
+                                                                  "soapGraph")
+        os.chdir(self.workdir)
+        sp.call(soap, shell = True)
+        
+    def soapConfig(self):
+        scriptPath = os.path.dirname(os.path.realpath(argv[0]))
+        soapconfig = scriptPath + "/soapconfig"
+        with open("soapConfig") as inFile, open(soapconfig,"w") as outFile:
+            for line in inFile:
+                outFile.write(line)
+            outFile.write("q1={}\n".format(self.readFiles[0]))
+            outFile.write("q2={}".format(self.readFiles[1]))
+        return soapconfig
+
+    def getContigFile(self):
+        return self.contigFile

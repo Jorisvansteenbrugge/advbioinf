@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from assemblers.SoapAssembler import SoapAssembler
 from assemblers.VelvetAssembler import VelvetAssembler
 from subprocess import call
 
@@ -32,7 +33,9 @@ class BaseAssembler(object):
         self.assembler = None
         if self.tool == "Velvet":
             self.assembler = VelvetAssembler(self.workdir)
-        
+        elif self.tool == "soapdenovo":
+            self.assembler = SoapAssembler(self.workdir)
+
         self.assembler.assemble(self.readType, self.readFiles)
         
         self.moveContigFile()
