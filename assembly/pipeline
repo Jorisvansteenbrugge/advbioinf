@@ -7,6 +7,7 @@ from assemblers.BaseAssembler import BaseAssembler
 from os import path
 import Metrics
 import argparse
+import sys
 
 def getArguments():
     p = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -44,8 +45,8 @@ def getArguments():
 
 
 
-def calcMetrics(directory):
-    for contigFile in glob(directory + "/*"):
+def calcMetrics(arguments):
+    for contigFile in glob(arguments.directory + "/*"):
         n50 = Metrics.getNMetric(contigFile, 50)
         print("{} N50: {}".format(path.basename(contigFile.split(".")[0]), str(n50)))
 
@@ -56,5 +57,7 @@ def assembly(arguments):
 
 
 if __name__ == "__main__":
+    if sys.version[0] != "3":
+        raise UserWarning("Program should be excecuted with python 3 and might crash")
     arguments = getArguments()
     arguments.func(arguments)
