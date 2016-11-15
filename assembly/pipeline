@@ -5,8 +5,13 @@ __author__ = "Joris van Steenbrugge"
 import subprocess as sp
 import tempfile as tp
 import argparse  
+import os
 
 class AssemblyTool(object):
+    """Object to handle the assembly of reads with different tools
+
+    Note: Currently only assembly with velvet is supported
+    """
     toolIndex = {1: "Velvet",
                  2: "wgs-assembler",
                  3: "soapdenovo",
@@ -23,21 +28,34 @@ class AssemblyTool(object):
         if self.tool == "Velvet":
             hash_length = 31
             self.inputs = "-short"
-            if self.readType == "paired":
-                self.inputs += "Paired"
             if len(self.readFiles) > 1: 
                 if self.readType == "paired":
-                    self.inputs = "-separate {}".format(self.inputs)
-            
+                    self.inputs += "Paired"
+                    self.inputs = "-separate {}".format(self.inputs) 
             self.inputs += " " + " ".join(self.readFiles)
-
-            
             velveth = "velveth {} {} -{} {} ".format(self.workdir,
                                                 hash_length,
                                                 fileFormat,
                                                 self.inputs)
-            velvetg = "velvetg {}".format(self.workdir)                           
+            velvetg = "velvetg {}".format(self.workdir)  
             return [velveth, velvetg]
+        elif self.tool == "soapdenovo":
+            soapconfig = self.soapConfig()
+            soap = "soapdenovo-63mer all -s {} -K 63 -R -o {}".format(soapconfig,
+                                                                        "soapGraph")
+            os.chdir(self.workdir)
+            return [soap]
+        else:
+            raise NotImplementedError("The use of {} is not currently supported".format(self.tool))
+
+    def soapConfig(self):
+        soapconfig = self.workdir + "/soapconfig"
+        with open("soapConfig") as inFile, open(soapconfig,"w") as outFile:
+            for line in inFile:
+                outFile.write(line)
+            outFile.write("q1={}\n".format(self.readFiles[0]))
+            outFile.write("q2={}".format(self.readFiles[1]))
+        return soapconfig
 
     def assemble(self):
         commands = self.getAssembleCommands()
@@ -51,7 +69,7 @@ class AssemblyTool(object):
 
 def getArguments():
     p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    p.add_argument("-i", dest="input", required=True, nargs = "+", help="Input file")
+    p.add_argument("-i", dest="input", required=True, nargs = "+", help="Input file(s)")
     p.add_argument("-p", dest="program", required=False, type=int,  default = 1, 
                     help="Alignment program \n 1: Velvet \n \
                                                2: wgs-assembler \n \
