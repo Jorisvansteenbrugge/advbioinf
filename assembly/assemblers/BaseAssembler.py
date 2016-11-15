@@ -5,11 +5,10 @@ from assemblers.VelvetAssembler import VelvetAssembler
 from subprocess import call
 
 import tempfile as tp
+import subprocess as sp
 
 class BaseAssembler(object):
-    
-    import subprocess as sp
-
+ 
     toolIndex = {1: "Velvet",
                  2: "wgs-assembler",
                  3: "soapdenovo",
