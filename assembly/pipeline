@@ -1,17 +1,37 @@
 #!/usr/bin/python3.5
-
+"""Combines multiple NGS related tools in a pipeline. 
+This project serves as a prove of concept rather than perfect functionality.
+The program is divided into multiple parts, handled by the BaseAnnotator, BaseAssembler
+and Metrics class.
+"""
 __author__ = "Joris van Steenbrugge"
-
-from glob import glob
-from assemblers.BaseAssembler import BaseAssembler
-from annotators.BaseAnnotator import BaseAnnotator
-from os import path
+__date__ = "November 2016"
+__email__ = "joris.vansteenbrugge@wur.nl"
 
 import Metrics
 import argparse
 import sys
+from glob import glob
+from os import path
+
+if sys.version[0] != "3":
+    raise UserWarning("Program should be excecuted with python 3")
+
+
+from assemblers.BaseAssembler import BaseAssembler
+from annotators.BaseAnnotator import BaseAnnotator
+
+
+
 
 def getArguments():
+    """Returns the argument object parsed from the command line
+    
+    The argument is divided into sub-arguments:
+        - Assembly
+        - Annotate
+        - Metrics
+    """
     p = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     
     subparsers = p.add_subparsers(dest = "command", help = "Sub-commands for the pipeline suite")
@@ -19,10 +39,10 @@ def getArguments():
 
     # Assembly sub command
     assembly_parser = subparsers.add_parser("assembly", 
-            help="De novo assembly")
+            help="De novo assembly", formatter_class=argparse.RawTextHelpFormatter)
     assembly_parser.set_defaults(func=assembly)
     assembly_parser.add_argument("-i", dest = "input", required = True, nargs = "+", 
-            help="Input file(s)")
+            help="Sequencing reads in fastq format")
     assembly_parser.add_argument("-p", dest = "program", required = False, type = int,  default = 1, 
             help="Alignment program: (default: 1) \n\t"+
                     "1: Velvet \n\t" + 
@@ -31,16 +51,18 @@ def getArguments():
                     "4: abyss (*) \n\t" +
                     "(*) Currently not supported")
     assembly_parser.add_argument("-type", dest = "readType", required = False, default="paired",
-            help="Type of the reads, unpaired/paired (default: paired)")
+            help = "Type of the reads, unpaired/paired (default: paired)")
+    assembly_parser.add_argument("-ksize", dest = "ksize", required = False, default = 23,
+            help = "The size of the kmers used in the de bruijn graph construction")
     assembly_parser.add_argument("-o", dest = "outdir", required = True, 
             help = "Directory for output files")
 
     # Annotate sub command
     annotate_parser = subparsers.add_parser("annotate", 
-            help = "Annotate a sequence")
+            help = "Annotate a sequence", formatter_class=argparse.RawTextHelpFormatter)
     annotate_parser.add_argument("-i", dest = "input", required = True,
             help = "Fasta file containing (contig) sequences")
-    annotat_parser.add_argument("-o", dest = "output", required = True,
+    annotate_parser.add_argument("-o", dest = "output", required = True,
             help = "Output file containing the annotation")
     annotate_parser.add_argument("-p", dest = "program", type = int, default = 1, 
             help = "Annotating program: (default: 1) \n\t" + 
@@ -49,10 +71,9 @@ def getArguments():
                     "(*) Currently not supported")
     annotate_parser.set_defaults(func=annotate)
 
-
     # Metrics sub command
     metrics_parser = subparsers.add_parser("metrics", 
-            help = "Calculate differnt metrics")
+            help = "Calculate different metrics", formatter_class=argparse.RawTextHelpFormatter)
     metrics_parser.add_argument("-d", dest = "directory", 
             help = "Path to a directory with contif files in fasta format")
     metrics_parser.set_defaults(func=calcMetrics)
@@ -63,22 +84,38 @@ def getArguments():
 
 
 def calcMetrics(arguments):
-    for contigFile in glob(arguments.directory + "/*"):
+    """Creates the Metrics object and print some on the shell
+    
+    Keyword arguments:
+        arguments -- The argparse object containing command line args
+    """
+    
+    for contigFile in glob(arguments.directory + "/*.fa*"):
         n50 = Metrics.getNMetric(contigFile, 50)
-        print("{} N50: {}".format(path.basename(contigFile.split(".")[0]), str(n50)))
+        size = Metrics.getNumContigs(contigFile)
+        print("{} #{} N50: {}".format(path.basename(contigFile.split(".")[0]), size, str(n50)))
 
 def assembly(arguments):
+    """Creates the assembler object and runs the assembly tool
+    
+    Keyword arguments:
+        arguments -- The argparse object containing command line args
+    """
+        
     assembler = BaseAssembler(arguments.program, arguments.readType, arguments.input, arguments.outdir)
-    assembler.assemble()
+    assembler.assemble(arguments.ksize)
     assembler.cleanUp()
 
 
 def annotate(arguments):
+    """Creates the annotate object and runs the annotation tool
+    
+    Keyword arguments:
+        arguments -- The argparse object containing command line args
+    """
     annotator = BaseAnnotator(arguments.program, arguments.input, arguments.output)
     annotator.annotate()
 
 if __name__ == "__main__":
-    if sys.version[0] != "3":
-        raise UserWarning("Program should be excecuted with python 3 and might crash")
     arguments = getArguments()
     arguments.func(arguments)

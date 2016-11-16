@@ -1,16 +1,26 @@
 #..!/usr/bin/env python
 
+__author__ = "Joris van Steenbrugge"
+__date__ = "November 2016"
+__email__ = "joris.vansteenbrugge@wur.nl"
+
 import subprocess as sp
 
 class VelvetAssembler(object):
+    """Object to execute a de novo assembly using Velvet"""
 
     def __init__(self, workdir):
+        """Sets some local variables concerning directories
+        
+        Keyword arguments:
+            workdir -- 
+        """
         self.workdir = workdir
         self.contigFile = self.workdir + "/contigs.fa"
+        self.logdir = self.workdir+ "/log/"
 
-
-    def assemble(self, readType, readFiles, fileFormat = "fastq",
-                                            hash_length = 31):
+    def assemble(self, readType, readFiles, ksize,
+                 fileFormat = "fastq",):
 
         self.inputs = "-short"
         if len(readFiles) > 1:
@@ -18,10 +28,12 @@ class VelvetAssembler(object):
                 self.inputs += "Paired"
                 self.inputs = "-separate {}".format(self.inputs)
         self.inputs += " " + " ".join(readFiles)
-        velveth = "velveth {} {} -{} {} ".format(self.workdir,
-                                                hash_length,
+        velveth = "velveth {0} {1} -{2} {3} > {4}/velvet.log 2> {4}/velvet.err".format(self.workdir,
+                                                ksize,
                                                 fileFormat,
-                                                self.inputs)
+                                                self.inputs,
+                                                self.logdir)
+        print(velveth)
         velvetg = "velvetg {}".format(self.workdir)
         
 

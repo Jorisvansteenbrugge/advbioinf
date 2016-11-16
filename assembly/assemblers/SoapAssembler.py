@@ -12,10 +12,11 @@ class SoapAssembler(object):
         self.contigFile = self.workdir + "/soapGraph.contig"
 
 
-    def assemble(self, readType, readFiles):
+    def assemble(self, readType, readFiles, ksize):
         self.readFiles = readFiles
         soapconfig = self.soapConfig()
-        soap = "soapdenovo-63mer all -s {} -K 63 -R -o {}".format(soapconfig,
+        soap = "soapdenovo-63mer all -s {} -K {} -R -o {}".format(soapconfig,
+                                                                  ksize,
                                                                   "soapGraph")
         os.chdir(self.workdir)
         sp.call(soap, shell = True)

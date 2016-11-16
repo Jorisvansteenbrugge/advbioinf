@@ -7,7 +7,7 @@ class BaseAnnotator(object):
 
     def __init__(self, tool_num, in_file, out_file):
         self.tool = self.tool_index[tool_num]
-        self.in_file = in_filie
+        self.in_file = in_file
         self.out_file = out_file
 
 
@@ -16,6 +16,7 @@ class BaseAnnotator(object):
         cmd_list = []
         if self.tool == "trnascan":
             trnascan = "trnascan-1.4 {} -o {}".format(self.in_file, self.out_file)
+            print(trnascan)
             cmd_list.append(trnascan)
 
 

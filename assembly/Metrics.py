@@ -32,4 +32,5 @@ def getNMetric(fileName, N=50):
             incrementing_size += size
             cur_size = size
 
-    
+def getNumContigs(fileName):
+    return len(getEntrySizes(fileName))
