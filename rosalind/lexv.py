@@ -22,7 +22,7 @@ def getOrder(s_list):
 
 if __name__ == "__main__":
     s_list, k = parseFile(argv[1])
-    order = getOrder(s_list)
+    order = "".join(s_list) 
     combinations = []
 
     count = k
@@ -32,10 +32,10 @@ if __name__ == "__main__":
         count -= 1
 
 
-    for letter in s_list:
-        letter_list = [x for x in combinations if x.startswith(letter)]
-        print(sorted(letter_list, key=lambda x:order[x[0]]))
-        break
 
-    #print(sorted(combinations))
+    
+    print("\n".join(sorted(combinations, key = lambda word: [order.index(x) for x in word])))
+
+
+
         
