@@ -1,4 +1,6 @@
-readDir: 
+readDir: /local/data/course/project/groups/COdeBRA/data/RNAseq/paired
+ 
 samples:
-    [A, B]
+    [SRR1271859, test]
+
 index: /local/data/course/project/groups/COdeBRA/indices/refGenomeIndex/hisatIndex 
