@@ -1,8 +1,11 @@
 from sys import argv
 
-def mergesort(array):
-    # array is a list
+count = 0
 
+def mergesort(array):
+    global count
+    count += 1
+    # array is a list
     #base casee
     if len(array) <= 1:
         return array
@@ -55,4 +58,5 @@ def parseFile(in_file):
 
 
 array = parseFile(argv[1])
-print(mergesort(array))
+mergesort(array)
+print(count)
