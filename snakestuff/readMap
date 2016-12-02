@@ -8,5 +8,7 @@ rule hisat_map:
         right = "{sample}_2.fastq"
     output:
         "mapped_reads/{sample}.bam"
+    shell:
+        "echo {input.indx} > {output}"
 
 

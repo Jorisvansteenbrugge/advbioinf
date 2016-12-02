@@ -1,3 +1,4 @@
+readDir: 
 samples:
     [A, B]
-index: 
+index: /local/data/course/project/groups/COdeBRA/indices/refGenomeIndex/hisatIndex 
