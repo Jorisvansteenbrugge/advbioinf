@@ -7,14 +7,14 @@ rule all:
 
 rule hisat_map:
     input:
-        left = config["readDir"]+"/{sample}_1.fastq",
+        left  = config["readDir"]+"/{sample}_1.fastq",
         right = config["readDir"]+"/{sample}_2.fastq"
     output:
         "mapped_reads/{sample}.bam"
     threads:
         4
     params:
-        indx = config["index"]
+        indx  = config["index"]
     log:
         "logs/hisat2/{sample}.log"
     shell:
@@ -34,3 +34,12 @@ rule samtools_sort:
         "samtools sort -m {params.m} -T sorted_reads/{wildcards.sample} "
         "-O bam {input} > {output}"
 
+rule samtools_index:
+    input:
+        "sorted_reads/{sample}.bam"
+    output:
+        "sorted_reads/{sample}.bam.bai"
+    threads:
+        1
+    shell:
+        "samtools index {input}"
