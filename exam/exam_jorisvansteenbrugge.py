@@ -232,21 +232,25 @@ if __name__ == "__main__":
 
     #Run Augustus and parse gff files    
     runAugustus(seq, augustus_out)
-    anno_trans = parseGFF(anno, "mRNA") #anno
-    augustus_trans = parseGFF(augustus_out, "transcript")
+    anno_trans = parseGFF("/home/azazael/anno.gff", "mRNA") #anno
+    augustus_trans = parseGFF("/home/azazael/predict.gff", "transcript")
 
     #Doing calculations to determine true positives, false negatives
     # and false positives. Based on these numbers the recall and precision
     # rate is calculated
     tp, fn, tp_transcripts = calcTPFN(augustus_trans, anno_trans)
     fp = calcFP(augustus_trans, anno_trans)
+
+    print("tp: "+str(tp))
+    print("fn: "+str(fn))
+    print("fp: "+str(fp))
     try:
         recall = (tp/(tp+fn))
         precision = (tp/(tp+fp))
         
         #Print the recall and precision to the console
-        print("Recall: {:.2f}".format(recall))
-        print("Precision: {:.2f}".format(precision))
+        print("Recall: {}".format(str(recall)))
+        print("Precision: {}".format(str(precision)))
     except ZeroDivisionError:
         print("One of the gff files might be empty.." +
             "Please check: {} and {}".format(augustus_out,
