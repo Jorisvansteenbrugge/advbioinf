@@ -1,6 +1,7 @@
 from sys import argv
-import sys
-sys.setrecursionlimit(20000)
+
+count = 0
+
 def parseFile(in_file):
     with open(in_file) as in_file:
         n = in_file.readline().strip()
@@ -34,7 +35,12 @@ def compose(a,b):
 
 
 def combine(array):
+    global count
+    count += 1
+    print count
+
     res = []
+    c = []
     if len(array) == 1:
         return array[0]
     else:
@@ -51,4 +57,4 @@ n, array = parseFile(argv[1])
 
 array  = [[i] for i in array]
 
-print " ".join(map(str, combine(array)))
+map(str, combine(array[0:len(array)/2]))

@@ -1,4 +1,4 @@
 *.swp
 *.pyc
 test.dat
-snakemake/.snakemake/*
+snakestuff/.snakemake/*
