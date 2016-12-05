@@ -2,4 +2,4 @@
 *.pyc
 test.dat
 snakestuff/.snakemake/*
-.ipynb_checkpoints/*
+bigdata/.ipynb_checkpoints/*
