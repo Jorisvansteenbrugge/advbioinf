@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 int * getCounts(char *dna, int dnalen){
+
     int t = 0;
     int c = 0;
     int a = 0;
     int g = 0;
     int *counts = malloc(5* sizeof(int));
-    printf("len %d\n", dnalen);
     for(int i=0;i<dnalen;i++)
     {
         char nuc = dna[i];
@@ -30,13 +30,6 @@ int * getCounts(char *dna, int dnalen){
                 g++;
                 break;
 
-            //default:
-             //   printf("\n%c\n", nuc);
-              //  counts[0] = a;
-              //  counts[1] = c;
-              //  counts[2] = g;
-              //  counts[3] = t;
-              //  return counts;
         } 
     }
     counts[0] = a;
@@ -50,20 +43,35 @@ int * getCounts(char *dna, int dnalen){
 
 int main(int argc, char *argv[]){
     FILE *fp;
-    const int buffsize = 1000;
     char *filepath = argv[1];
-    char buff[buffsize];
-    
+    size_t len = 0;
+    ssize_t read; 
+    char *line = NULL;
 
     fp =  fopen(filepath, "r");
-    fscanf(fp, "%999s", buff);
+    if (fp == NULL){
+        exit(1);
+    }
 
-    printf("%s\n", buff);   
-    int dnalen = sizeof(buff) / sizeof(int);
 
-    int *counts = getCounts(buff, dnalen);
-    printf("%d %d %d %d\n",counts[0], counts[1], counts[2], counts[3]);
-    
-    free(counts); 
+    int t = 0;
+    int c = 0;
+    int a = 0;
+    int g = 0;
+
+    while ((read = getline(&line, &len, fp)) != -1) {
+        int *counts = getCounts(line, strlen(line));
+        a += counts[0];
+        c += counts[1];
+        g += counts[2];
+        t += counts[3];
+        free(counts);
+
+
+    }
+
+    printf("%d %d %d %d\n",a,c,g,t);
+    free(line);
+    fclose(fp);
     return 0;
 }
