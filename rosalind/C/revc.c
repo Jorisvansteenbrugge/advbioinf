@@ -3,9 +3,8 @@
 #include <stdlib.h>
 
 
-char * getRevc(char *dna, size_t dnalen){
+char * getComp(char *dna, size_t dnalen){
     char *revc = malloc((dnalen) * sizeof(char));
-//rev: len -1 -i
     for(int i = 0; i < dnalen; i++){
         switch(dna[i]){
             case 'T':
@@ -27,8 +26,14 @@ char * getRevc(char *dna, size_t dnalen){
 
         }
     }
-
     return revc;
+}
+
+char * getRev(char *comp, size_t complen){
+	for(int i = complen-1; i>=0; i--){
+		printf("%c", comp[i]);
+	}
+	printf("\n");
 }
 
 int main(int argc, char *argv[]){
@@ -44,8 +49,12 @@ int main(int argc, char *argv[]){
     }
 
     while((read = getline(&line, &len, fp)) != -1){
-        char *revc = getRevc(line, strlen(line));
-        printf("%s\n", revc);
+        char *revc = getComp(line, strlen(line));
+        //printf("Original: %s\n", revc);
+	//printf("Reverse: ");
+	getRev(revc, strlen(line));
+	
+	free(revc);
     }
 
 }
