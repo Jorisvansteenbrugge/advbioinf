@@ -8,12 +8,12 @@ def calcRabbits(n,k):
     pairs = [1, 1]
     
     for i in range(2,n):
-        try:
-            f1 = pairs[i-1]
-            f2 = pairs[i-2] * 3
-            pairs.append((f1+f2))
-        except IndexError:
-            pass
+        #try:
+        f1 = pairs[i-1]
+        f2 = pairs[i-2] * 3
+        pairs.append((f1+f2))
+      #  except IndexError:
+       #     pass
 
 
     return pairs
