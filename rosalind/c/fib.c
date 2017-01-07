@@ -2,18 +2,18 @@
 #include <stdlib.h>
 
 
-int *calcRabbit(int n, int k){
-    int pairs[40] = {1, 1};
-    int *ret = malloc(sizeof(int));
+int calcRabbit(int n, int k){
+    long int pairs[40] = {1, 1};
+    //int *ret = malloc(sizeof(int));
 
-    for(int i = 2; i < n; i++){
-        int f1 = pairs[i-1];
-        int f2 = pairs[i-2];
-        printf("val: %d", f1+f2);
-        pairs[i] = f1+f2;        
+    for(int i = 2; i < n; ++i){
+        long int f1 = pairs[i-1];
+        long int f2 = pairs[i-2] * 3;
+        long int summ = (f1+f2);
+        pairs[i] = summ;
+             
     }
-    ret = pairs[n];
-    return ret;
+    return pairs[n-1];
 }
 
 int main(int argc, char *argv[]){
@@ -26,8 +26,9 @@ int main(int argc, char *argv[]){
 
     int k = strtol(argv[2], &p, 10);
     int n = strtol(argv[1], &p, 10);
-    printf("K: %d\n", k);
-    printf("N: %d\n", n);
 
-    printf("%d", *calcRabbit(n, k));
+
+    printf("%d\n", calcRabbit(n, k));
+
+    return 0;
 }
