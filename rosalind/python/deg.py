@@ -2,32 +2,38 @@
 from sys import argv
 
 def parseFile(fileName):
-    nodes = []
-    dic = {}
+    nodes = {}
     with open(fileName) as in_file:
+        header = in_file.readline()
         for line in in_file:
             line = line.strip().split()
-            nodes += line
-            if line[0] in dic.keys():
-                dic[line[0]].append(line[1])
-            else:
-                dic[line[0]] = [line[1]]
             
-    return dic, sorted(list(set(nodes)))
+
+            try:
+                nodes[line[0]].append(line[1])
+            except:
+                nodes[line[0]] = [line[1]]
+
+            try:
+                nodes[line[1]].append(line[0])
+            except:
+                nodes[line[1]] = [line[0]]
+
+    return nodes
 
 
 if __name__ == "__main__":
-    dic, nodes = parseFile(argv[1])
+    nodes = parseFile(argv[1])
 
-    for node in nodes:
-        count = 0
-        if node in dic.keys():
-            count += 1
 
-        for x in dic.values():
-            if node in x:
-                count += 1
 
-        if count > 1:
-            print(count)
+    out = []
+    for key in sorted(nodes.keys()):
+        vals = list(set(nodes[key]))
 
+        out.append(len(vals))
+
+    print(len(nodes.keys()))
+    print(str(sum([len(x) for x in nodes.values()])))
+    #print " ".join(map(str, out))
+         
