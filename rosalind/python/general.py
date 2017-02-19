@@ -33,3 +33,17 @@ def parseNonFasta(fileName):
         seq += line.strip()
 
     return seq
+
+
+def hamming(seqA, seqB):
+    if len(seqA) != len(seqB):
+        raise ValueError("Strings should be of equal length" )
+
+    count = 0
+    for i in range(len(seqA)):
+        if seqA[i] != seqB[i]:
+            count += 1
+
+    return count
+
+    
