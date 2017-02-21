@@ -46,4 +46,6 @@ def hamming(seqA, seqB):
 
     return count
 
-    
+def revcomp(seq):
+	tab = {"A": "T", "T":"A", "G":"C", "C":"G"}
+	return "".join([tab[x] for x in seq[::-1]])    
