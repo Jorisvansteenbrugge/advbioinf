@@ -22,33 +22,38 @@ def filterGood(sequences):
 			if key == other:
 				break
 			if seq == sequences[other] or seq == revcomp(sequences[other]) or seq_revc == sequences[other] or seq_revc == revcomp(sequences[other]):
-			#debug this step
+				print seq
 				for vals in [key, other]:
 					if vals not in keysToDel:
 						keysToDel.append(vals)
 
 	#removestep
+	print "remove {}".format(" ".join(keysToDel))
 	for remKey in keysToDel:
 		del sequences[remKey]
 	return sequences
 
 
-def cycleBads(sequences):
+def cycleBads(bad, good):
 	from general import hamming, revcomp
 
 
-	for key in sequences.keys():
-		for other in sequences.keys():
+	for key in bad.keys():
+		for other in good.keys():
 			if key == other:
 				break
-			for comb in combinations((sequences[key], revcomp(sequences[key]),
-				sequences[other], revcomp(sequences[other])), 2):
-				hammingdist = hamming(comb[0], comb[1])
-				if hammingdist == 1:
-					print("{}->{}".format(sequences[key], sequences[other]))		
 			
+			normal_hammingdist = hamming(bad[key][1], good[other][1])
+			rev_hammingdist = hamming(bad[key][1], revcomp(good[other][1]))
+				
+			print(normal_hammingdist)				
+			print(rev_hammingdist)
+			if normal_hammingdist == 1:
+				print("{}->{}".format(bad[key], good[other]))		
+			elif rev_hammingdist ==1:
+				print("{}->{}".format(bad[key], revcomp(good[other])))		
 
 sequences =  getSequences(argv[1])
 bad_sequences = filterGood(sequences)
 print bad_sequences
-cycleBads(bad_sequences)
+cycleBads(bad_sequences, sequences)
